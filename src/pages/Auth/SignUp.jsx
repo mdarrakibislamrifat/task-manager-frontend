@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AuthLayout from "../../components/layouts/AuthLayout";
 import { validateEmail } from "../../utils/helper";
 import ProfilePhotoSelector from "../../components/Inputs/ProfilePhotoSelector";
 import Input from "../../components/Inputs/Input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATHS } from "../../utils/apiPaths";
+import { UserProviderContext } from "../../context/userContext";
+import uploadImage from "../../utils/uploadImage";
 
 const SignUp = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -12,28 +16,54 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [adminInviteToken, setAdminInviteToken] = useState("");
   const [error, setError] = useState(null);
+  const { updateUser } = useContext(UserProviderContext);
+  const navigate = useNavigate();
 
   // Handle form submission
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    if (!fullName) {
-      setError("Please enter your full name.");
-      return;
-    }
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
+    let profileImageUrl = "";
 
-    if (!password) {
-      setError("Please enter the password.");
+    if (!fullName || !validateEmail(email) || !password) {
+      setError("Please fill all fields correctly.");
       return;
     }
 
     setError("");
 
-    // signup api call simulation
+    try {
+      if (profilePic) {
+        const imgUploadRes = await uploadImage(profilePic);
+        profileImageUrl = imgUploadRes?.imageUrl || "";
+      }
+
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+        name: fullName,
+        email,
+        password,
+        profileImageUrl,
+        adminInviteToken,
+      });
+
+      const { token, role } = response.data;
+
+      if (token) {
+        localStorage.setItem("token", token);
+
+        updateUser(response.data);
+        if (role === "admin") {
+          navigate("/admin/dashboard");
+        } else if (role === "member") {
+          navigate("/user/dashboard");
+        } else {
+          navigate("/user/dashboard");
+        }
+      }
+    } catch (err) {
+      console.error("Signup Error Details:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Something went wrong.");
+    }
   };
 
   return (
@@ -71,8 +101,8 @@ const SignUp = () => {
             />
 
             <Input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={adminInviteToken}
+              onChange={(e) => setAdminInviteToken(e.target.value)}
               label="Admin Invite Token"
               placeholder="6 Digit Code"
               type="password"
