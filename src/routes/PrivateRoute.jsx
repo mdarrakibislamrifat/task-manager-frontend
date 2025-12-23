@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-const PrivateRoute = ({ allowRoles }) => {
+const PrivateRoute = ({ allowedRoles }) => {
   return <Outlet />;
 };
 
