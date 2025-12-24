@@ -1,4 +1,4 @@
-// export const BASE_URL = "https://task-manager-backend-khaki-three.vercel.app/";
+// export const BASE_URL = "https://task-manager-backend-khaki-three.vercel.app";
 
 export const BASE_URL = "http://localhost:8000";
 
@@ -34,6 +34,6 @@ export const API_PATHS = {
     EXPORT_USERS: "/api/reports/export/users",
   },
   IMAGE: {
-    UPLOAD_IMAGE: "/api/images/upload-image",
+    UPLOAD_IMAGE: "/api/auth/upload-image",
   },
 };

@@ -49,16 +49,26 @@ const SignUp = () => {
       const { token, role } = response.data;
 
       if (token) {
+        // ১. সবার আগে টোকেন সেভ করুন
         localStorage.setItem("token", token);
 
+        // ২. কনটেক্সট আপডেট করুন
         updateUser(response.data);
-        if (role === "admin") {
-          navigate("/admin/dashboard");
-        } else if (role === "member") {
-          navigate("/user/dashboard");
-        } else {
-          navigate("/user/dashboard");
-        }
+
+        // ৩. কনসোলে চেক করুন রোলটি কী আসছে (ডিবাগিং এর জন্য)
+        console.log("User Role from Response:", role);
+
+        // ৪. ছোট একটি ডিলে দিন যাতে স্টেট এবং স্টোরেজ সিঙ্ক হওয়ার সময় পায়
+        setTimeout(() => {
+          if (role === "admin") {
+            navigate("/admin/dashboard");
+          } else if (role === "member") {
+            navigate("/user/dashboard");
+          } else {
+            // যদি রোল না মেলে তাহলেও যেন কোথাও যায়
+            navigate("/user/dashboard");
+          }
+        }, 500);
       }
     } catch (err) {
       console.error("Signup Error Details:", err.response?.data || err.message);

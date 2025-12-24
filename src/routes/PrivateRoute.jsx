@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { Navigate, Outlet } from "react-router-dom";
 import { UserProviderContext } from "../context/userContext";
+import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRoute = ({ allowedRoles }) => {
   const { user, loading } = useContext(UserProviderContext);
@@ -12,9 +12,12 @@ const PrivateRoute = ({ allowedRoles }) => {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
+  if (allowedRoles && !user.role) {
+    return <div>Verifying Role...</div>;
+  }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/unauthorized" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return <Outlet />;
