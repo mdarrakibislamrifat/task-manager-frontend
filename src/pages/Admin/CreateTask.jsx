@@ -5,6 +5,7 @@ import { useState } from "react";
 import { LuTrash2 } from "react-icons/lu";
 import { PRIORITY_DATA } from "../../utils/data";
 import SelectDropdown from "../../components/Inputs/SelectDropdown";
+import SelectUsers from "../../components/Inputs/SelectUsers";
 
 const CreateTask = () => {
   const location = useLocation();
@@ -120,6 +121,33 @@ const CreateTask = () => {
                   value={taskData.priority}
                   onChange={(value) => handleValueChange("priority", value)}
                   placeholder="Select Priority"
+                />
+              </div>
+
+              <div className="col-span-6 md:col-span-4">
+                <label className="text-xs font-medium text-slate-600">
+                  Due Date
+                </label>
+                <input
+                  placeholder="Create App UI"
+                  className="form-input"
+                  value={taskData.dueDate}
+                  onChange={({ target }) =>
+                    handleValueChange("dueDate", target.value)
+                  }
+                  type="date"
+                />
+              </div>
+
+              <div className="col-span-12 md:col-span-3">
+                <label className="text-xs font-medium text-slate-600">
+                  Assign To
+                </label>
+                <SelectUsers
+                  selectedUsers={taskData.assignedTo}
+                  setSelectedUsers={(value) => {
+                    handleValueChange("assignedTo", value);
+                  }}
                 />
               </div>
             </div>
