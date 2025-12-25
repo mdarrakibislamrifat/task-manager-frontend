@@ -11,6 +11,7 @@ import { addThousandsSeparator } from "../../utils/helper";
 import { LuArrowRight } from "react-icons/lu";
 import TaskListTable from "../../components/TaskListTable";
 import CustomPieChart from "../../components/Charts/CustomPieChart";
+import CustomBarChart from "../../components/Charts/CustomBarChart";
 
 const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
 
@@ -26,6 +27,16 @@ const Dashboard = () => {
   const [pieChartData, setPieChartData] = useState({});
 
   const [barChartData, setBarChartData] = useState({});
+
+  // Get Greeting
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    if (hour < 21) return "Good Evening";
+    return "Good Night";
+  };
 
   // Prepare Chart Data
   const prepareChartData = (data) => {
@@ -86,7 +97,9 @@ const Dashboard = () => {
       <div className="card my-5">
         <div>
           <div className="col-span-3">
-            <h2 className="text-xl md:text-2xl">Good Morning ! {user?.name}</h2>
+            <h2 className="text-xl md:text-2xl">
+              {getGreeting()}! {user?.name}
+            </h2>
             <p className="text-xs md:text-[13px]text-gray-400 mt-1.5">
               {moment().format("dddd,Do MMMM, YYYY")}
             </p>
@@ -135,6 +148,15 @@ const Dashboard = () => {
               <h1 className="font-medium">Task Distribution</h1>
             </div>
             <CustomPieChart data={pieChartData} colors={COLORS} />
+          </div>
+        </div>
+
+        <div>
+          <div className="card">
+            <div className="flex items-center justify-between">
+              <h1 className="font-medium">Task Priority Levels</h1>
+            </div>
+            <CustomBarChart data={barChartData} />
           </div>
         </div>
 
