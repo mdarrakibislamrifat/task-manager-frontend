@@ -10,6 +10,9 @@ import InfoCard from "../../components/Cards/InfoCard";
 import { addThousandsSeparator } from "../../utils/helper";
 import { LuArrowRight } from "react-icons/lu";
 import TaskListTable from "../../components/TaskListTable";
+import CustomPieChart from "../../components/Charts/CustomPieChart";
+
+const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
 
 const Dashboard = () => {
   useUserAuth();
@@ -24,6 +27,37 @@ const Dashboard = () => {
 
   const [barChartData, setBarChartData] = useState({});
 
+  // Prepare Chart Data
+  const prepareChartData = (data) => {
+    const taskistribution = data?.taskDistribution || null;
+    const taskPriorityLevels = data?.taskPriorityLevels || null;
+
+    const taskDistributionData = [
+      {
+        status: "Pending",
+        count: taskistribution?.Pending || 0,
+      },
+      {
+        status: "In Progress",
+        count: taskistribution?.InProgress || 0,
+      },
+      {
+        status: "Completed",
+        count: taskistribution?.Completed || 0,
+      },
+    ];
+
+    setPieChartData(taskDistributionData);
+
+    const PriorityLevelData = [
+      { priority: "Low", count: taskPriorityLevels?.Low || 0 },
+      { priority: "Medium", count: taskPriorityLevels?.Medium || 0 },
+      { priority: "High", count: taskPriorityLevels?.High || 0 },
+    ];
+
+    setBarChartData(PriorityLevelData);
+  };
+
   const getDashboardData = async () => {
     try {
       const response = await axiosInstance.get(
@@ -31,6 +65,7 @@ const Dashboard = () => {
       );
       if (response.data) {
         setDashboardData(response.data);
+        prepareChartData(response.data?.charts);
       }
     } catch (err) {
       console.log("Error fetching users:", err);
@@ -94,6 +129,15 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
+        <div>
+          <div className="card">
+            <div className="flex items-center justify-between">
+              <h1 className="font-medium">Task Distribution</h1>
+            </div>
+            <CustomPieChart data={pieChartData} colors={COLORS} />
+          </div>
+        </div>
+
         <div className="md:col-span-2">
           <div className="card">
             <div className="flex items-center justify-between">

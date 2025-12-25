@@ -48,32 +48,37 @@ const TaskListTable = ({ tableData }) => {
         </thead>
         <tbody>
           {tableData.map((task) => {
-            <tr key={task._id} className="border-t border-gray-200">
-              <td className="">{task.title}</td>
-              <td className="">
-                <span
-                  className={`px-2 py-1 text-xs rounded inline-block ${getStatusBadgeColor(
-                    task.status,
-                  )}`}
-                >
-                  {task.status}
-                </span>
-              </td>
-              <td className="">
-                <span
-                  className={`px-2 py-1 text-xs rounded inline-block ${getPriorityBadgeColor(
-                    task.priority,
-                  )}`}
-                >
-                  {task.priority}
-                </span>
-              </td>
-              <td className="">
-                {task.createdAt
-                  ? moment(task.createdAt).format("Do MMMM YYYY")
-                  : "N/A"}
-              </td>
-            </tr>;
+            return (
+              <tr key={task._id} className="border-t border-gray-200">
+                <td className="my-4 mx-4 text-black font-medium  text-[13px] line-clamp-1 overflow-hidden">
+                  {task.title}
+                </td>
+
+                <td className="py-4 px-4">
+                  <span
+                    className={`px-2 py-1 text-xs font-medium rounded inline-block ${getStatusBadgeColor(
+                      task.status,
+                    )}`}
+                  >
+                    {task.status}
+                  </span>
+                </td>
+                <td className="py-4 px-4">
+                  <span
+                    className={`px-2 py-1 font-medium  text-xs rounded inline-block ${getPriorityBadgeColor(
+                      task.priority,
+                    )}`}
+                  >
+                    {task.priority}
+                  </span>
+                </td>
+                <td className="py-4 px-4 text-gray-700 font-medium text-[13px] text-nowrap hidden md:table-cell">
+                  {task.createdAt
+                    ? moment(task.createdAt).format("Do MMMM YYYY")
+                    : "N/A"}
+                </td>
+              </tr>
+            );
           })}
         </tbody>
       </table>
