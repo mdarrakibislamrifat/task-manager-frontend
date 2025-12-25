@@ -43,7 +43,7 @@ const SideMenu = ({ activeMenu }) => {
           />
         </div>
         {user?.role === "admin" && (
-          <div className="text-[12px] font-medium text-white bg-primary px-3 py-1 rounded mt-1">
+          <div className="text-[12px] font-medium text-white bg-primary px-3 py-1 rounded-md mt-1">
             Admin
           </div>
         )}
@@ -57,12 +57,12 @@ const SideMenu = ({ activeMenu }) => {
       {sideMenuData.map((item, index) => (
         <button
           key={`menu_${index}`}
-          className={`w-full flex items-center gap-4 text-[15px] font-medium${
+          className={`w-full flex items-center gap-4 text-[15px] font-medium ${
             activeMenu === item.label
-              ? "text-primary bg-linear-to-r from-blue-200/30 via-blue-300/60 to-blue-200/30 border-r-3"
-              : ""
+              ? "text-primary bg-blue-100 border-r-4 border-primary"
+              : "text-gray-600"
           } py-3 px-6 mb-3 cursor-pointer`}
-          onClick={() => handleClick(item.path)}
+          onClick={() => handleClick(item.link)}
         >
           <item.icon className="text-xl" />
           {item.label}

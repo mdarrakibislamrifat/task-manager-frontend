@@ -19,7 +19,7 @@ const Navbar = ({ activeMenu }) => {
       </button>
       <h2 className="text-lg font-medium text-black">Task Manager</h2>
       {openSideMenu && (
-        <div className="fixed top-15.25 -ml-4 bg-white">
+        <div className="fixed top-15 left-0 w-full h-full bg-white z-50">
           <SideMenu activeMenu={activeMenu} />
         </div>
       )}
