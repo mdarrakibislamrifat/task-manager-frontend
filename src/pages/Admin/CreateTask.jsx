@@ -60,7 +60,7 @@ const CreateTask = () => {
     try {
       const todoList = taskData.todoChecklist.map((item) => ({
         text: item,
-        completed: true,
+        completed: false,
       }));
 
       const response = await axiosInstance.post(API_PATHS.TASK.CREATE_TASK, {
