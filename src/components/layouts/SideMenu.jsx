@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { UserProviderContext } from "../../context/userContext";
+import { UserProviderContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { SIDE_MENU_DATA, SIDE_MENU_USER_DATA } from "../../utils/data";
 

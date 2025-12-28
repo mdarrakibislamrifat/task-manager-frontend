@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { UserProviderContext } from "../context/userContext";
+import { UserProviderContext } from "../context/UserContext";
 import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRoute = ({ allowedRoles }) => {

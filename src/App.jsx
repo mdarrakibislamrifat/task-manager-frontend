@@ -18,7 +18,7 @@ import ViewTaskDetails from "./pages/User/ViewTaskDetails";
 
 import { useContext } from "react";
 import { Toaster } from "react-hot-toast";
-import UserProvider, { UserProviderContext } from "./context/userContext";
+import UserProvider, { UserProviderContext } from "./context/UserContext";
 
 const App = () => {
   return (

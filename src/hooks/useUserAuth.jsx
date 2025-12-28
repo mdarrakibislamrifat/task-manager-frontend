@@ -1,5 +1,5 @@
 import { use, useContext, useEffect } from "react";
-import { UserProviderContext } from "../context/userContext";
+import { UserProviderContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
 const useUserAuth = () => {
