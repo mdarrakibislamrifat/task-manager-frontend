@@ -38,6 +38,10 @@
   @apply bg-white p-6 rounded-lg shadow-md shadow-gray-100 border border-gray-200/50;
 }
 
+.user-card {
+  @apply bg-white p-4 rounded-xl shadow-md shadow-gray-100 border border-gray-200/50;
+}
+
 .form-input {
   @apply w-full text-sm text-black outline-none bg-white border border-slate-100 px-2.5 py-2 rounded-md mt-2 placeholder:text-gray-500;
 }
