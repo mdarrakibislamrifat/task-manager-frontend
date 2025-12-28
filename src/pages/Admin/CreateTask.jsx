@@ -11,6 +11,8 @@ import AddAttachmentsInput from "../../components/Inputs/AddAttachmentsInput";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import toast from "react-hot-toast";
+import { Modal } from "../../components/Modal";
+import DeleteAlert from "../../components/DeleteAlert";
 
 const CreateTask = () => {
   const location = useLocation();
@@ -177,7 +179,19 @@ const CreateTask = () => {
   };
 
   // delete task
-  const deleteTask = async () => {};
+  const deleteTask = async () => {
+    try {
+      await axiosInstance.delete(API_PATHS.TASK.DELETE_TASK(taskId));
+      setOpenDeleteAlert(false);
+      toast.success("Task deleted successfully");
+      navigate("/admin/tasks");
+    } catch (err) {
+      console.error(
+        "Error deleting task:",
+        err.response?.data?.message || err.message,
+      );
+    }
+  };
 
   useEffect(() => {
     if (taskId) {
@@ -313,6 +327,17 @@ const CreateTask = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={openDeleteAlert}
+        onClose={() => setOpenDeleteAlert(false)}
+        title="Delete Task"
+      >
+        <DeleteAlert
+          content="Are you sure you want to delete this task?"
+          onDelete={deleteTask}
+        />
+      </Modal>
     </DashboardLayout>
   );
 };
