@@ -110,13 +110,16 @@ const SignUp = () => {
               type="password"
             />
 
-            <Input
-              value={adminInviteToken}
-              onChange={(e) => setAdminInviteToken(e.target.value)}
-              label="Admin Invite Token"
-              placeholder="6 Digit Code"
-              type="password"
-            />
+            <div className="flex flex-col gap-2">
+              <Input
+                value={adminInviteToken}
+                onChange={(e) => setAdminInviteToken(e.target.value)}
+                label="Need Admin access? Please provide a valid 6-digit invite token."
+                placeholder="6 Digit Code"
+                type="password"
+                className="w-full"
+              />
+            </div>
           </div>
           {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
           <button type="submit" className="btn-primary">
