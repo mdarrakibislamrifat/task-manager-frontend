@@ -1,6 +1,6 @@
-// export const BASE_URL = "https://task-manager-backend-khaki-three.vercel.app";
+export const BASE_URL = "https://task-manager-backend-khaki-three.vercel.app";
 
-export const BASE_URL = "http://localhost:8000";
+// export const BASE_URL = "http://localhost:8000";
 
 // utils/.apiPaths.js
 
