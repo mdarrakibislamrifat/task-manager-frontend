@@ -24,6 +24,8 @@ const UserDashboard = () => {
 
   const [dashboardData, setDashboardData] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [pieChartData, setPieChartData] = useState({});
 
   const [barChartData, setBarChartData] = useState({});
@@ -70,6 +72,7 @@ const UserDashboard = () => {
   };
 
   const getDashboardData = async () => {
+    setIsLoading(true);
     try {
       const response = await axiosInstance.get(
         API_PATHS.TASK.GET_USER_DASHBOARD_DATA,
@@ -80,6 +83,8 @@ const UserDashboard = () => {
       }
     } catch (err) {
       console.log("Error fetching users:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,6 +96,35 @@ const UserDashboard = () => {
     getDashboardData();
     return () => {};
   }, []);
+
+  if (isLoading) {
+    return (
+      <DashboardLayout activeMenu="Dashboard">
+        <div className="animate-pulse space-y-6 my-5">
+          {/* Greeting Skeleton */}
+          <div className="card space-y-3">
+            <div className="h-7 bg-gray-200 rounded w-1/3"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-5">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-24 bg-gray-100 rounded-lg"></div>
+              ))}
+            </div>
+          </div>
+
+          {/* Charts Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="card h-80 bg-gray-50 rounded-xl"></div>
+            <div className="card h-80 bg-gray-50 rounded-xl"></div>
+          </div>
+
+          {/* Table Skeleton */}
+          <div className="card h-64 bg-gray-50 rounded-xl"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout activeMenu="Dashboard">

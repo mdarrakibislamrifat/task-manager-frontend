@@ -11,6 +11,7 @@ const ViewTaskDetails = () => {
   const { id } = useParams();
 
   const [task, setTask] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getStatusTagColor = (status) => {
     switch (status) {
@@ -27,6 +28,7 @@ const ViewTaskDetails = () => {
 
   // Get task info by id
   const getTaskDetailsById = async () => {
+    setIsLoading(true);
     try {
       const response = await axiosInstance.get(
         API_PATHS.TASK.GET_TASK_BY_ID(id),
@@ -37,6 +39,8 @@ const ViewTaskDetails = () => {
       }
     } catch (err) {
       console.error("Error fetching task details:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,7 +82,55 @@ const ViewTaskDetails = () => {
   return (
     <DashboardLayout activeMenu="My Tasks">
       <div className="mt-5">
-        {task && (
+        {isLoading ? (
+          // ১. টাস্ক ডিটেইলস স্কেলিটন
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 animate-pulse">
+            <div className="form-card col-span-3 space-y-6">
+              {/* Title Skeleton */}
+              <div className="flex justify-between items-center">
+                <div className="h-7 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-6 bg-gray-200 rounded w-20"></div>
+              </div>
+
+              {/* Description Skeleton */}
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                <div className="h-20 bg-gray-100 rounded w-full"></div>
+              </div>
+
+              {/* Priority, Date, Assigned Skeleton */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                  <div className="flex -space-x-2">
+                    <div className="h-8 w-8 bg-gray-200 rounded-full border-2 border-white"></div>
+                    <div className="h-8 w-8 bg-gray-200 rounded-full border-2 border-white"></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Checklist Skeleton */}
+              <div className="space-y-3 pt-4">
+                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center gap-3 p-2">
+                    <div className="h-4 w-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-100 rounded w-full"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : task ? (
+          // ২. আসল ডাটা (লোডিং শেষ হলে)
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="form-card col-span-3">
               <div className="flex items-center justify-between">
@@ -93,14 +145,15 @@ const ViewTaskDetails = () => {
                   {task?.status}
                 </div>
               </div>
+
               <div className="mt-4">
                 <InfoBox label="Description" value={task?.description} />
               </div>
+
               <div className="grid grid-cols-12 gap-4 mt-4">
                 <div className="col-span-6 md:col-span-4">
                   <InfoBox label="Priority" value={task?.priority} />
                 </div>
-
                 <div className="col-span-6 md:col-span-4">
                   <InfoBox
                     label="Due Date"
@@ -115,7 +168,6 @@ const ViewTaskDetails = () => {
                   <label className="text-xs font-medium text-slate-500">
                     Assigned To
                   </label>
-
                   <AvatarGroup
                     avatars={
                       task?.assignedTo?.map((item) => item?.profileImageUrl) ||
@@ -125,7 +177,8 @@ const ViewTaskDetails = () => {
                   />
                 </div>
               </div>
-              <div className="mt-2">
+
+              <div className="mt-6">
                 <label className="text-xs font-medium text-slate-500">
                   Todo Checklist
                 </label>
@@ -140,7 +193,7 @@ const ViewTaskDetails = () => {
               </div>
 
               {task?.attachments?.length > 0 && (
-                <div className="mt-2">
+                <div className="mt-4">
                   <label className="text-xs font-medium text-slate-500">
                     Attachments
                   </label>
@@ -155,6 +208,10 @@ const ViewTaskDetails = () => {
                 </div>
               )}
             </div>
+          </div>
+        ) : (
+          <div className="text-center py-10 text-gray-500">
+            Task details not found.
           </div>
         )}
       </div>

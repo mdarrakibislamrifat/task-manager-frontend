@@ -24,6 +24,8 @@ const Dashboard = () => {
 
   const [dashboardData, setDashboardData] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [pieChartData, setPieChartData] = useState({});
 
   const [barChartData, setBarChartData] = useState({});
@@ -70,6 +72,7 @@ const Dashboard = () => {
   };
 
   const getDashboardData = async () => {
+    setIsLoading(true);
     try {
       const response = await axiosInstance.get(
         API_PATHS.TASK.GET_DASHBOARD_DATA,
@@ -80,6 +83,8 @@ const Dashboard = () => {
       }
     } catch (err) {
       console.log("Error fetching users:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,6 +96,25 @@ const Dashboard = () => {
     getDashboardData();
     return () => {};
   }, []);
+
+  if (isLoading) {
+    return (
+      <DashboardLayout activeMenu="Dashboard">
+        <div className="animate-pulse space-y-6 my-5">
+          <div className="h-10 bg-gray-200 rounded w-1/4 mb-4"></div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-28 bg-gray-200 rounded-lg"></div>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="h-64 bg-gray-200 rounded-lg"></div>
+            <div className="h-64 bg-gray-200 rounded-lg"></div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout activeMenu="Dashboard">

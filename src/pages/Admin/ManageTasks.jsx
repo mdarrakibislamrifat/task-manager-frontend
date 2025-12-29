@@ -11,10 +11,12 @@ const ManageTasks = () => {
   const [allTasks, setAllTasks] = useState([]);
   const [tabs, setTabs] = useState([]);
   const [filterStatus, setFilterStatus] = useState("All");
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
   const getAllTasks = async () => {
+    setIsLoading(true);
     try {
       const response = await axiosInstance(API_PATHS.TASK.GET_ALL_TASKS, {
         params: {
@@ -49,6 +51,8 @@ const ManageTasks = () => {
       setTabs(statusArray);
     } catch (error) {
       console.error("Error fetching users:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -88,51 +92,90 @@ const ManageTasks = () => {
       <div className="my-5">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-xl md:text-xl font-medium">My Tasks</h2>
-            <button
-              className="flex lg:hidden download-btn"
-              onClick={handleDownloadReport}
-            >
-              <LuFileSpreadsheet className="text-lg" />
-              Download Report
-            </button>
-          </div>
-          {tabs?.[0]?.count > 0 && (
-            <div className="flex items-center gap-3">
-              <TaskStatusTab
-                tabs={tabs}
-                activeTab={filterStatus}
-                setActiveTab={setFilterStatus}
-              />
+            <h2 className="text-xl font-medium">My Tasks</h2>
+            {!isLoading && (
               <button
-                className="hidden lg:flex download-btn"
+                className="flex lg:hidden download-btn"
                 onClick={handleDownloadReport}
               >
-                <LuFileSpreadsheet className="text-lg" />
-                Download Report
+                <LuFileSpreadsheet className="text-lg" /> Download Report
               </button>
-            </div>
+            )}
+          </div>
+
+          {/* ৪. ট্যাব স্কেলিটন অথবা ট্যাব */}
+          {isLoading ? (
+            <div className="h-10 w-64 bg-gray-200 animate-pulse rounded-md"></div>
+          ) : (
+            tabs?.[0]?.count > 0 && (
+              <div className="flex items-center gap-3">
+                <TaskStatusTab
+                  tabs={tabs}
+                  activeTab={filterStatus}
+                  setActiveTab={setFilterStatus}
+                />
+                <button
+                  className="hidden lg:flex download-btn"
+                  onClick={handleDownloadReport}
+                >
+                  <LuFileSpreadsheet className="text-lg" /> Download Report
+                </button>
+              </div>
+            )
           )}
         </div>
 
+        {/* ৫. টাস্ক কার্ড গ্রিড */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          {allTasks?.map((item, index) => (
-            <TaskCard
-              key={item._id}
-              title={item.title}
-              description={item.description}
-              priority={item.priority}
-              status={item.status}
-              progress={item.progress}
-              createdAt={item.createdAt}
-              dueDate={item.dueDate}
-              assignedTo={item.assignedTo?.map((item) => item.profileImageUrl)}
-              attachmentCount={item.attachments?.length || 0}
-              completedTodoCount={item.completedTodoCount || 0}
-              todoChecklist={item.todoChecklist || []}
-              onClick={() => handleClick(item)}
-            />
-          ))}
+          {isLoading ? (
+            // লোডিং অবস্থায় ৬টি স্কেলিটন কার্ড দেখাবে
+            [1, 2, 3, 4, 5, 6].map((i) => (
+              <div
+                key={i}
+                className="bg-white border border-gray-100 rounded-xl p-5 space-y-4 animate-pulse"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-6 bg-gray-200 rounded w-12"></div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-full"></div>
+                  <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                </div>
+                <div className="flex gap-2 py-2">
+                  <div className="h-8 w-8 bg-gray-200 rounded-full"></div>
+                  <div className="h-8 w-8 bg-gray-200 rounded-full"></div>
+                </div>
+                <div className="pt-4 border-t border-gray-50 flex justify-between">
+                  <div className="h-4 bg-gray-200 rounded w-20"></div>
+                  <div className="h-4 bg-gray-200 rounded w-20"></div>
+                </div>
+              </div>
+            ))
+          ) : allTasks.length > 0 ? (
+            allTasks.map((item) => (
+              <TaskCard
+                key={item._id}
+                title={item.title}
+                description={item.description}
+                priority={item.priority}
+                status={item.status}
+                progress={item.progress}
+                createdAt={item.createdAt}
+                dueDate={item.dueDate}
+                assignedTo={item.assignedTo?.map((u) => u.profileImageUrl)}
+                attachmentCount={item.attachments?.length || 0}
+                completedTodoCount={item.completedTodoCount || 0}
+                todoChecklist={item.todoChecklist || []}
+                onClick={() => handleClick(item)}
+              />
+            ))
+          ) : (
+            // যদি কোন টাস্ক না থাকে
+            <div className="col-span-full text-center py-10 text-gray-400">
+              No tasks found.
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>
