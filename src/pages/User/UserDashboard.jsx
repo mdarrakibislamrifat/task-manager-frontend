@@ -12,6 +12,7 @@ import { LuArrowRight } from "react-icons/lu";
 import TaskListTable from "../../components/TaskListTable";
 import CustomPieChart from "../../components/Charts/CustomPieChart";
 import CustomBarChart from "../../components/Charts/CustomBarChart";
+import { toast } from "react-hot-toast";
 
 const COLORS = ["#8D51FF", "#00B8DB", "#7BCE00"];
 
@@ -29,6 +30,21 @@ const UserDashboard = () => {
   const [pieChartData, setPieChartData] = useState({});
 
   const [barChartData, setBarChartData] = useState({});
+
+  const checkUpcomingDeadlines = (tasks) => {
+    const tomorrow = moment().add(1, "days").startOf("day");
+
+    tasks.forEach((task) => {
+      const taskDueDate = moment(task.dueDate).startOf("day");
+      if (taskDueDate.isSame(tomorrow) && task.status !== "Completed") {
+        toast.error(`Reminder: "${task.title}" is due tomorrow!`, {
+          id: task._id,
+          duration: 6000,
+          position: "top-right",
+        });
+      }
+    });
+  };
 
   // Get Greeting
   const getGreeting = () => {
@@ -80,6 +96,11 @@ const UserDashboard = () => {
       if (response.data) {
         setDashboardData(response.data);
         prepareChartData(response.data?.charts);
+
+        // এখানে ডেডলাইন চেক ফাংশন কল করুন
+        if (response.data.recentTasks) {
+          checkUpcomingDeadlines(response.data.recentTasks);
+        }
       }
     } catch (err) {
       console.log("Error fetching users:", err);
